@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: service-flask
+  name: service-flask
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: service-flask
+  template:
+    metadata:
+      labels:
+        app: service-flask
+    spec:
+      containers:
+        - env:
+            - name: env
+              value: DISPLAY
+          image: flaskservice:1
+          imagePullPolicy: Always
+          name: api
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          resources:
+            requests:
+              memory: "100m"
+              cpu: "250m"
+            limits:
+              memory: "500m"
+              cpu: "700m"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+              scheme: HTTP
+              httpHeaders:
+                - name: Custom
+                  value: awesome
+            initialDelaySeconds: 20
+            timeoutSeconds: 10
+            periodSeconds: 5
+
+---
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: service-flask
+spec:
+  maxReplicas: 16
+  minReplicas: 2
+  scaleTargetRef:
+    apiVersion: extensions/v1beta1
+    kind: Deployment
+    name: service-flask
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: 60
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageValue: 300m
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-flask
+  labels: service-flask
+spec:
+  type: clusterIP
+  selector:
+    app: service-flask
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 80
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: serviceflask-ingress
+  annotations:
+    ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /*
+            backend:
+              serviceName: service-flask
+              servicePort: 8080
