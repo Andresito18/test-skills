@@ -58,6 +58,6 @@ kubectl apply -f ./k8s/deployment.yaml
 
 ## Jenkins
 
-![jenkins](https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pngwave.com%2Fpng-clip-art-fkaag&psig=AOvVaw1vG4ksQNDQu1oQJAosPY6n&ust=1594250262164000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCOCy7JajvOoCFQAAAAAdAAAAABAK)
+![alternativetext](https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pngwave.com%2Fpng-clip-art-fkaag&psig=AOvVaw1vG4ksQNDQu1oQJAosPY6n&ust=1594250262164000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCOCy7JajvOoCFQAAAAAdAAAAABAK)
 
 With jenkins the idea is have three environments like example it was used the cloud GCP. For this the deployment be management starting with metology gitflow of git then in jenkins if deploy a branch to be develop ,qa and master.
